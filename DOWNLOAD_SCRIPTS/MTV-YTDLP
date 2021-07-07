@@ -1,0 +1,92 @@
+#!/bin/bash
+##########################################################################
+##########################################################################
+##                                                                      ##
+##         _____ _   _____     _____     _   _____         _            ##
+##        |     | |_|     |_ _| __  |___| |_|   __|___ ___| |_          ##
+##        |  |  |   | | | | | | __ -| .'|   |  |  | . |_ -|   |         ##
+##        |_____|_|_|_|_|_|_  |_____|__,|_|_|_____|___|___|_|_|         ##
+##                        |___|                                         ##
+##                                                                      ##
+##########################################################################
+##                             MTV-YTDLP v2.0                           ##
+##                         github.com/ohmybahgosh                       ##
+##########################################################################
+##         Variables will be passed via input, See Example Command      ##
+##         Just Follow The Prompts and Enter What it Says To Enter      ##
+##                                                                      ##
+##                    WARNING: Use wisely and what not..                ##
+##########################################################################
+##########################################################################
+
+
+## Assign Input URL To Variable
+read -e -p "`clear`Enter The FULL URL Path To The MTV Episode: `echo $'\n\nEx: https://www.mtv.com/episodes/4c4qga/ridiculousness-24kgoldn-season-20-ep-41';echo $'\n> '`" MTVURL
+clear
+echo "You Entered:"
+echo "${MTVURL}"
+echo ""
+echo "Moving Onward..."
+sleep 3
+## Create a Default Parent Folder & Modify This Path To Match it:
+read -e -p "`clear`Enter Path To The Directory Where We Should Download Episodes: `echo $'\n\nEx: /STORAGE/MTV/';echo $'\n> '`" OUTPUTDIR
+clear
+echo "You Entered:"
+echo "${OUTPUTDIR}"
+echo ""
+echo "Okie Dokie, Here We GO..."
+sleep 3
+clear
+###Safety measures to isolate the script if accidentally ran in wrong folder/folder with existing mp4 files###
+##Create a tmp working directory
+cd ${OUTPUTDIR}
+TMPWORKDIR=$(echo "TMPMTVDIR_$((1 + $RANDOM % 10000))")
+mkdir ${TMPWORKDIR} && cd ${TMPWORKDIR}
+
+##Make MTV_JSON folder
+mkdir MTV_JSON
+##Grab JSON to Parse via JQ (For passing a final output title/filename to ffmpeg)
+yt-dlp --dump-json ${MTVURL} | jq . > MTV_JSON/MTV.json
+
+##Using The MTV.json File, Parse and Create Variables For Series/Title/Season/Episode/etc
+SERIES_NAME=$(cat MTV_JSON/MTV.json | jq -r --slurp 'first(.[].series)')
+SEASON_NUMBER=$(cat MTV_JSON/MTV.json | jq -r --slurp 'first(.[].season_number)')
+EPISODE_NUMBER=$(cat MTV_JSON/MTV.json | jq -r --slurp 'first(.[].episode_number)')
+EPISODE_TITLE=$(cat MTV_JSON/MTV.json | jq -r --slurp 'first(.[].playlist_title)')
+
+##Now We'll Merge The New Variables We Made From The JSON To Create a Final Merged Filename
+FINAL_MERGED_FILENAME=$(echo "${SERIES_NAME} - S${SEASON_NUMBER}E${EPISODE_NUMBER} - ${EPISODE_TITLE}.mp4")
+
+#Download the media from MTV.com
+#Each multi-part MP4 for the episode will be named sequentially I.E. 00001.mp4 00002.mp4
+#yt-dlp -f 'bv+ba/b'  --downloader-args aria2c:"-x 16" --convert-subtitles=srt --add-metadata --write-all-thumbnails --embed-thumbnail -N45 --embed-subs
+yt-dlp --verbose --autonumber-start 1 -o '%(autonumber)s.%(ext)s' ${MTVURL}
+
+#Create inputs.txt file with our multi-part output MP4 filepaths
+ls *.mp4 >> inputs.txt
+
+#Let's use SED to format the inputs.txt file for ffmpeg
+sed -i -e "s/^/file '/g" -e "s/$/'/g" inputs.txt
+
+#Merge multi-part output MP4 files in to a single MP4
+ffmpeg -f concat -i inputs.txt -c copy "${FINAL_MERGED_FILENAME}"
+
+clear
+
+##Make Series & Season Folders to Move Merged File in to
+mkdir "${SERIES_NAME}"
+mkdir "${SERIES_NAME}/Season ${SEASON_NUMBER}/"
+mv "${FINAL_MERGED_FILENAME}" "${SERIES_NAME}/Season ${SEASON_NUMBER}/"
+
+#Using the rm interactive flag, we issue a prompt to delete the inputs.txt file
+#Enter y to confirm deletion of inputs.txt or n to keep inputs.txt
+rm -i inputs.txt
+
+# Remove no longer needed multi-part MP4 files
+rm 00*.mp4
+
+# Echo out Episode Path
+clear
+echo "You Can Find Your Episode in a TMPDIR Inside of The OUTPUT Path You Provided:"
+echo ""
+echo "${TMPWORKDIR}/${FINAL_MERGED_FILENAME}"
