@@ -1,0 +1,40 @@
+#!/bin/bash
+##########################################################################
+##########################################################################
+##                                                                      ##
+##         _____ _   _____     _____     _   _____         _            ##
+##        |     | |_|     |_ _| __  |___| |_|   __|___ ___| |_          ##
+##        |  |  |   | | | | | | __ -| .'|   |  |  | . |_ -|   |         ##
+##        |_____|_|_|_|_|_|_  |_____|__,|_|_|_____|___|___|_|_|         ##
+##                        |___|                                         ##
+##                                                                      ##
+##########################################################################
+##                           ADULT_SWIM-YTDLP v1                        ##
+##          Grab ALL Availiable Episodes of an Adult Swim Show          ##
+##                         github.com/ohmybahgosh                       ##
+##########################################################################
+##         Variables will be passed via input, See Example Command      ##
+##            Just Follow The Directions in The Comments Below..        ##
+##########################################################################
+##                            REQUIRED TOOLS:                           ##
+##               XIDEL: https://github.com/benibela/xidel               ##
+##        SED: https://www.gnu.org/software/sed/manual/sed.html         ##
+##               YT-DLP: https://github.com/yt-dlp/yt-dlp               ##
+##########################################################################
+##########################################################################
+##                    WARNING: Use wisely and what not..                ##
+##########################################################################
+##########################################################################
+
+### EXAMPLE COMMAND: ADULT_SWIM-YTDLP robot-chicken
+
+## You Must ONLY PROVIDE the Show's URL Slug
+### JUST FIND THE Show's URL, AND REMOVE "https://www.adultswim.com/videos/" LEAVING JUST THE SHOW'S URL SLUG
+## Example: https://www.adultswim.com/videos/robot-chicken --> robot-chicken
+URL_SLUG=$1
+
+## Now The Script Will Parse The Show's Page Using XIDEL and Grab Episode URLS VIA XPATHs
+## One By One, The Episodes Will Be Downloaded Until They Are All Grabbed
+while read -r l; do 
+    yt-dlp -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d - %(episode)s.%(ext)s' "${l}"
+done < <(xidel "https://www.adultswim.com/videos/${1}" -e "//div[@itemprop='containsSeason']/div/div[2]/div/div/div/a/@href" | sed 's#^#https://www.adultswim.com##g')
