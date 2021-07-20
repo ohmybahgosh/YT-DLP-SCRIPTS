@@ -40,14 +40,14 @@ sleep 3
 clear
 ###Safety measures to isolate the script if accidentally ran in wrong folder/folder with existing mp4 files###
 ##Create a tmp working directory
-cd ${OUTPUTDIR}
+cd "${OUTPUTDIR}"
 TMPWORKDIR=$(echo "TMPMTVDIR_$((1 + $RANDOM % 10000))")
-mkdir ${TMPWORKDIR} && cd ${TMPWORKDIR}
+mkdir "${TMPWORKDIR}" && cd "${TMPWORKDIR}"
 
 ##Make MTV_JSON folder
 mkdir MTV_JSON
 ##Grab JSON to Parse via JQ (For passing a final output title/filename to ffmpeg)
-yt-dlp --dump-json ${MTVURL} | jq . > MTV_JSON/MTV.json
+yt-dlp --dump-json "${MTVURL}" | jq . > MTV_JSON/MTV.json
 
 ##Using The MTV.json File, Parse and Create Variables For Series/Title/Season/Episode/etc
 SERIES_NAME=$(cat MTV_JSON/MTV.json | jq -r --slurp 'first(.[].series)')
@@ -61,7 +61,7 @@ FINAL_MERGED_FILENAME=$(echo "${SERIES_NAME} - S${SEASON_NUMBER}E${EPISODE_NUMBE
 #Download the media from MTV.com
 #Each multi-part MP4 for the episode will be named sequentially I.E. 00001.mp4 00002.mp4
 #yt-dlp -f 'bv+ba/b'  --downloader-args aria2c:"-x 16" --convert-subtitles=srt --add-metadata --write-all-thumbnails --embed-thumbnail -N45 --embed-subs
-yt-dlp --verbose --autonumber-start 1 -o '%(autonumber)s.%(ext)s' ${MTVURL}
+yt-dlp --verbose --autonumber-start 1 -o '%(autonumber)s.%(ext)s' "${MTVURL}"
 
 #Create inputs.txt file with our multi-part output MP4 filepaths
 ls *.mp4 >> inputs.txt
