@@ -30,7 +30,7 @@
 
 ## Path To Your Cookie
 PARAMOUNT_COOKIE=/STORAGE/PARAMOUNT/paramountplus_cookies.txt
-PROXY_IP=196.18.153.102:8800
+PROXY_IP=PROXY_IP:PORT
 
 
 ## Boilerplate ASCII Formatting Functions:
@@ -165,6 +165,7 @@ clear
 
 ## Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
 ## Create a function so we can multi-thread
+## IF USING THE GEO PROXY VERIFICATION BYPASS, ADD: '--geo-verification-proxy' after 'yt-dlp' (WITHOUT QUOTES)
 MULTI_THREAD(){
 yt-dlp --quiet --extractor-retries 5 --no-warnings --downloader aria2c --downloader-args "aria2c:-x 16 -s 40 -j 16 -k 10M --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
 
