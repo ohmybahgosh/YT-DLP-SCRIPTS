@@ -29,8 +29,11 @@
 #######################################################################################################################
 
 ## Path To Your Cookie
-PARAMOUNT_COOKIE=/STORAGE/PARAMOUNT/paramountplus_cookies.txt
-PROXY_IP=PROXY_IP:PORT
+#PARAMOUNT_COOKIE=/STORAGE/PARAMOUNT/paramountplus_cookies.txt
+
+## UNCOMMENT AND FILL IN YOUR PROXY_IP:PORT IF OUTSIDE OF THE US
+## SCROLL DOWN TO FIND OTHER LINES WHERE YOU NEED TO UNCOMMENT IF USING THE GEO VERIFICATION PROXY
+#PROXY_IP=PROXY_IP:PORT
 
 
 ## Boilerplate ASCII Formatting Functions:
@@ -165,9 +168,18 @@ clear
 
 ## Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
 ## Create a function so we can multi-thread
-## IF USING THE GEO PROXY VERIFICATION BYPASS, ADD: '--geo-verification-proxy' after 'yt-dlp' (WITHOUT QUOTES)
+
 MULTI_THREAD(){
+
+### DEFAULT COMMAND - NON GEO VERIFICATION PROXY USAGE
 yt-dlp --quiet --extractor-retries 5 --no-warnings --downloader aria2c --downloader-args "aria2c:-x 16 -s 40 -j 16 -k 10M --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
+
+
+## IF USING THE GEO PROXY VERIFICATION BYPASS, COMMENT OUT THE DEFAULT YT-DLP COMMAND
+## ..AND UNCOMMENT THE COMMENTED OUT YT-DLP COMMAND THAT CONTAINS "--geo-verification-proxy" 
+
+### ALTERNATIVE COMMAND - GEO VERIFICATION PROXY BYPASS
+#yt-dlp --geo-verification-proxy "$PROXY_IP" --quiet --extractor-retries 5 --no-warnings --downloader aria2c --downloader-args "aria2c:-x 16 -s 40 -j 16 -k 10M --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
 
 }
 
