@@ -168,7 +168,7 @@ fi
 ## Begin Loop..
 while read -r SEASON_NUMBER; do
 	# Now That We Know How Many Seasons We're Working With, Let's Pull The JSON For Each Season
-	JSON_DUMP=$(curl --silent --cookie "$PARAMOUNT_COOKIE" "https://www.paramountplus.com/shows/$URL_SLUG/video/xhr/episodes/page/0/size/18/xs/0/season/$SEASON_NUMBER/" -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Accept-Language: en-US,en;q=0.5' --compressed -H 'X-Requested-With: XMLHttpRequest' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Referer: https://www.paramountplus.com/shows/' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' -H 'TE: trailers')
+	JSON_DUMP=$(curl --silent --cookie "$PARAMOUNT_COOKIE" "https://www.paramountplus.com/shows/$URL_SLUG/video/xhr/episodes/page/0/size/1000/xs/0/season/$SEASON_NUMBER/" -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Accept-Language: en-US,en;q=0.5' --compressed -H 'X-Requested-With: XMLHttpRequest' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Referer: https://www.paramountplus.com/shows/' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' -H 'TE: trailers')
 
 	# For Each Season We Loop Thru, We'll Extract The Episode URLs in to a TXT File
 	echo $JSON_DUMP | jq -r '.result.data[].metaData.videoPageURL' | sed 's#^#https://paramountplus.com#g' >> $EPISODE_URL_LIST
