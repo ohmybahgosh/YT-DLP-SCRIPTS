@@ -1,3 +1,5 @@
+#### This script will prompt you for the series url on Discovery+, then your cookie file, then your working directory for output....it'll then automatically grab every single episode url from all the seasons available.  It'll then use yt-dlp/aria2c to multi-thread download all of the episodes.  Discovery+ episode files have a shit ton of fragments, so the merging of each episode will take some time.  You'll notice this when aria2c seems to be paused, but really it's just merging the files in the background.
+
 ```bash
 #######################################################################################################################
 #######################################################################################################################
