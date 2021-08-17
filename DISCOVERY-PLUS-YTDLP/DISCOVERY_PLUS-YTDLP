@@ -19,7 +19,6 @@
 ########################          To Run This Script, Just Type: DISCOVERY_PLUS-YTDLP         #########################
 #######################################################################################################################
 ########################                            REQUIRED TOOLS:                           #########################
-########################               XIDEL: https://github.com/benibela/xidel               #########################
 ########################        SED: https://www.gnu.org/software/sed/manual/sed.html         #########################
 ########################               YT-DLP: https://github.com/yt-dlp/yt-dlp               #########################
 ########################                   JQ: https://stedolan.github.io/jq                  #########################
@@ -204,7 +203,7 @@ clear
 ## Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
 ## Create a function so we can multi-thread
 MULTI_THREAD(){
-yt-dlp --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --downloader aria2c --downloader-args "aria2c:-x 16 -j 40 --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
+yt-dlp --restrict-filenames --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --downloader aria2c --downloader-args "aria2c:-x 16 -j 40 --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
 }
 
 
@@ -218,6 +217,8 @@ MULTI_THREAD &
 [ "$( jobs | wc -l )" -ge 5 ] && wait
 done < "$EPISODE_URL_LIST"
 wait
+clear
+
 
 ## Remove The TXT File of URLS, Feel Free To Comment This Out
 centerCOLOR_ONE "To KEEP $EPISODE_URL_LIST Type: N ..and Hit Enter" && echo ""
