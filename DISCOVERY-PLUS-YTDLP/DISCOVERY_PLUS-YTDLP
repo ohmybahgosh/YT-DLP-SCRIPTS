@@ -203,7 +203,7 @@ clear
   MULTI_THREAD(){
     ## This Method is WAY FASTER than using w/ aria2c.
     ## "I've Included some extra metadata/thumbnail flags as well"
-    ## If your connection/cpu can or cannot handle the current parallel downloading setting,modify "-N10" to increase/decrease the number of parallel fragment downloads per episode
+    ## If your connection/cpu can or cannot handle the current parallel downloading setting,modify "-N50" to increase/decrease the number of parallel fragment downloads per episode
     yt-dlp  --embed-thumbnail \
       --embed-metadata \
       --write-all-thumbnails \
