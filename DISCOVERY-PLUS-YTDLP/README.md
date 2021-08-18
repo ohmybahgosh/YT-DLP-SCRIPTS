@@ -1,4 +1,13 @@
+# DISCOVERY-PLUS-YTDLP
+**Bash Script To Bulk Download All Episodes From Discovery+**
+
 #### This script will prompt you for the series url on Discovery+, then your cookie file, then your working directory for output....it'll then automatically grab every single episode url from all the seasons available.  It'll then use yt-dlp/aria2c to multi-thread download all of the episodes.  Discovery+ episode files have a shit ton of fragments, so the merging of each episode will take some time.  You'll notice this when aria2c seems to be paused, but really it's just merging the files in the background.
+
+#### Demo:
+<p align="center">
+  <a href="#"><img src="https://gist.githubusercontent.com/ohmybahgosh/a1b48ed3710fd5b77bdb56b61c885ef5/raw/4b126db5e2fc84a550fcae80f2079a671bbfc6df/YT-DLP_SCRIPTS.svg"></a>
+</p>
+
 
 ```bash
 #######################################################################################################################
@@ -11,14 +20,6 @@
 ########################        |_____|_|_|_|_|_|_  |_____|__,|_|_|_____|___|___|_|_|         #########################
 ########################                        |___|                                         #########################
 ########################                                                                      #########################
-########################                                                                      #########################
-########################              https://github.com/ohmybahgosh/YT-DLP-SCRIPTS           #########################
-########################                                                                      #########################
-########################                          DISCOVERY_PLUS-YTDLP                        #########################
-########################            Download All Episodes From All Seasons of Series          #########################
-########################                                                                      #########################
-#######################################################################################################################
-########################          To Run This Script, Just Type: DISCOVERY_PLUS-YTDLP         #########################
 #######################################################################################################################
 ########################                            REQUIRED TOOLS:                           #########################
 ########################        SED: https://www.gnu.org/software/sed/manual/sed.html         #########################
