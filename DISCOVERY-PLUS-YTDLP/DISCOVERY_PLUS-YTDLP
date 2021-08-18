@@ -209,7 +209,7 @@ MULTI_THREAD(){
 ## This Method is WAY FASTER than using the above command w/ aria2c.  Feel free to modify to your liking
 ## "I've Included some extra metadata/thumbnail flags as well"
 ## If your connection/cpu can handle it,modify "-N10" to increase the number of parallel fragment downloads per episode
-yt-dlp  --embed-thumbnail --embed-metadata --write-all-thumbnails -N10 --ignore-config --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --hls-prefer-ffmpeg -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL" }
+yt-dlp  --embed-thumbnail --embed-metadata --write-all-thumbnails -N10 --ignore-config --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --hls-prefer-ffmpeg -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
 
 }
 
