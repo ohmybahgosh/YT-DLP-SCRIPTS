@@ -52,55 +52,56 @@
 #######################################################################################################################
 #######################################################################################################################
 
+
 ## SETUP TERM TO OUTPUT IN COLOR
 export TERM=xterm-256color
 
 
-## Boilerplate ASCII Formatting Functions:
-centerCOLOR_ONE() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500});
-printf '%*.*s \e[35m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+## BOILERPLATE ASCII FORMATTING FUNCTIONS:
+  centerCOLOR_ONE() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0});
+    printf '%*.*s \e[35m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
-centerCOLOR_TWO() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500});
-printf '%*.*s \e[36m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+  centerCOLOR_TWO() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0});
+    printf '%*.*s \e[36m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
-centerCOLOR_THREE() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500});
-printf '%*.*s \e[34m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+  centerCOLOR_THREE() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0});
+    printf '%*.*s \e[34m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
-centerCOLOR_FOUR() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500});
-printf '%*.*s \e[31m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+  centerCOLOR_FOUR() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0});
+    printf '%*.*s \e[31m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
-centerBLINK() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500}); 
-printf '%*.*s \e[36m\e[5m%s\e[0m\e[25m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+  centerBLINK() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0}); 
+    printf '%*.*s \e[36m\e[5m%s\e[0m\e[25m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
-centerBOLD() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500});
-printf '%*.*s \e[35m\e[1m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+  centerBOLD() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0});
+    printf '%*.*s \e[35m\e[1m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
-centerBOLD_TWO() {
-termwidth=$(tput cols);
-padding=$(printf '%0.1s' " "{1..500});
-printf '%*.*s \e[36m\e[1m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
-}
+  centerBOLD_TWO() {
+    termwidth=$(tput cols);
+    padding=$(printf '%0.0s' " "{0..0});
+    printf '%*.*s \e[36m\e[1m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+  }
 
 
-## Let's Get The Party Started By Grabbing Some User Input...
+## LET'S GET THE PARTY STARTED BY GRABBING SOME USER INPUT...
 clear
 centerCOLOR_ONE "First We Have To Determine How Many Seasons There Are..."
 centerCOLOR_TWO "Then, We'll Determine & Extract The Episode URLs From Each Season"
@@ -108,7 +109,7 @@ centerCOLOR_THREE "Once We Extract The Episode URLs, We'll Begin Downloading The
 read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to BEGIN-_'`"
 
 
-## Let's Grab The Series URL..
+## LET'S GRAB THE SERIES URL..
 read -e -r -p "`clear` `centerCOLOR_ONE "Provide The URL For The Series:"` `centerCOLOR_TWO "Ex: https://www.discoveryplus.com/show/deadliest-catch"` `printf "\e[35m\e[1m\nENTER THE URL:\n\e[36m\e[1m>\e[21m\e[0m "`" RAW_SERIES_URL
 clear
 centerCOLOR_ONE "Series URL Entered:"
@@ -117,7 +118,7 @@ read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
 clear
 
 
-## Let's Provide The FULL Path To Our COOOOOKIE
+## LET'S PROVIDE THE FULL PATH TO OUR COOOOOKIE
 read -e -r -p "`clear` `centerCOLOR_ONE "Provide The FULL PATH For The Cookie File:"` `centerCOLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS/DISCOVERY_PLUS_COOKIE.txt"` `printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m "`" COOKIE_FILE
 clear
 centerCOLOR_ONE "Cookie Path Entered:"
@@ -130,7 +131,7 @@ clear
 URL_SLUG=$(echo "$RAW_SERIES_URL" | sed -E 's#^.*show/(.*).*$#\1#' | sed -e 's#/$##')
 
 
-## Let's Set The Output Directory That We'll Work Inside of
+## LET'S SET THE OUTPUT DIRECTORY THAT WE'LL WORK INSIDE OF
 read -r -e -p "`clear` `centerCOLOR_ONE "Enter The Path To a Directory Where You Want To Download To"` `centerCOLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS"` `printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m "`" OUTPUTDIR
 clear
 centerCOLOR_ONE "You Entered:"
@@ -138,90 +139,95 @@ centerCOLOR_TWO "$OUTPUTDIR" && sleep 1 && echo "" && echo ""
 read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
 clear
 
-## Create a TMP Directory To Safely Work Inside of..
+
+## CREATE A TMP DIRECTORY TO SAFELY WORK INSIDE OF..
 cd "$OUTPUTDIR" || exit
 TMPWORKDIR=$(echo "${URL_SLUG}_$((1 + $RANDOM % 10000))_TMPWORKDIR")
 mkdir "$TMPWORKDIR" && cd "$TMPWORKDIR" || exit
 
 
-## Let's Get a Loop Together Here, So That We Can Extract EVERY Episode URL fro EVERY Season
+## LET'S GET A LOOP TOGETHER HERE, SO THAT WE CAN EXTRACT EVERY EPISODE URL FRO EVERY SEASON
 centerCOLOR_ONE "Now Let's Determine How Many Seasons There Are For This Series"
-centerCOLOR_TWO "...Then We'll Extract The Episode URLS For Each Season" && sleep 1 && echo "" && echo ""
+centerCOLOR_TWO "Then We'll Extract The Episode URLS For Each Season" && sleep 1 && echo "" && echo ""
 read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
 clear
 
 
-## Create Filename Variable For Our URL LIST
+## CREATE FILENAME VARIABLE FOR OUR URL LIST
 EPISODE_URL_LIST=${URL_SLUG}_INPUT_URLS.txt
 
 
 ## GRAB FIRST DUMP OF JSON SO WE CAN SET THE SHOW_ID VARIABLE
 SHOW_JSON_FIRST=$(
 curl -s "https://us1-prod-direct.discoveryplus.com/cms/routes/show/${URL_SLUG}?include=default&decorators=viewingHistory,isFavorite,playbackAllowed" \
--H 'authority: us1-prod-direct.discoveryplus.com' \
--H 'x-disco-client: WEB:UNKNOWN:dplus_us:1.8.0' \
--H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
--H 'accept: */*' \
--H 'accept-language: en-US,en;q=0.9' \
---cookie "${COOKIE_FILE}"
+  -H 'authority: us1-prod-direct.discoveryplus.com' \
+  -H 'x-disco-client: WEB:UNKNOWN:dplus_us:1.8.0' \
+  -H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
+  -H 'accept: */*' \
+  -H 'accept-language: en-US,en;q=0.9' \
+  --cookie "${COOKIE_FILE}"
 )
 
 
 ## USING THE SHOW_JSON_FIRST DUMP, WE CAN EXTRACT THE SHOW_ID & SHOW_SEASON_COUNT
 SHOW_ID=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[].attributes.component.mandatoryParams' | grep -Eo '^pf.*$' | head -n1 | sed -e 's#^pf\[show\.id\]\=##g')
-SHOW_SEASON_COUNT=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[]? | .attributes.component.filters | values' | grep -Eo 'pf\[seasonNumber\]' | wc -l)
-for SEASON_NUMBER in $(seq "$SHOW_SEASON_COUNT"); do
+SHOW_SEASON_COUNT=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[]? | .attributes.component.filters | values' | grep -Eo 'pf\[seasonNumber\].*$' | sed -e 's#pf\[seasonNumber\]=##g' -e 's#",##g')
 
 
 ## NOW WE'LL LOOP THRU EACH SEASON TO GRAB ALL EPISODE URLS AND PUT THEM IN INPUT_URLS.txt
-curl -s "https://us1-prod-direct.discoveryplus.com/cms/collections/89438300356657080631189351362572714453?include=default&decorators=viewingHistory,isFavorite,playbackAllowed&pf\[seasonNumber\]=${SEASON_NUMBER}&pf\[show.id\]=${SHOW_ID}" \
-  -H 'authority: us1-prod-direct.discoveryplus.com' \
-  -H 'x-disco-client: WEB:UNKNOWN:dplus_us:prod' \
-  -H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
-  -H 'referer: https://www.discoveryplus.com/' \
-  -H 'accept-language: en' \
-  --cookie "${COOKIE_FILE}" | jq -r '.included[]? | .attributes | .path' | sed -e 's#null##g' -e '/^$/d' | sed -e 's#^#https://www.discoveryplus.com/video/#g' >> "$EPISODE_URL_LIST"
+for SEASON_NUMBER in $(echo "$SHOW_SEASON_COUNT"); do
+  curl -s "https://us1-prod-direct.discoveryplus.com/cms/collections/89438300356657080631189351362572714453?include=default&decorators=viewingHistory,isFavorite,playbackAllowed&pf\[seasonNumber\]=${SEASON_NUMBER}&pf\[show.id\]=${SHOW_ID}" \
+    -H 'authority: us1-prod-direct.discoveryplus.com' \
+    -H 'x-disco-client: WEB:UNKNOWN:dplus_us:prod' \
+    -H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
+    -H 'referer: https://www.discoveryplus.com/' \
+    -H 'accept-language: en' \
+    --cookie "${COOKIE_FILE}" | jq -r '.included[]? | .attributes | .path' | sed -e 's#null##g' -e '/^$/d' | sed -e 's#^#https://www.discoveryplus.com/video/#g' >> "$EPISODE_URL_LIST"
 done
 
 
-## Let's Get The Total Episode Count & Set it To A Variable
+## LET'S GET THE TOTAL EPISODE COUNT & SET IT TO A VARIABLE
 EPISODE_COUNT=$(cat "$EPISODE_URL_LIST" | wc -l) && clear
+SEASONS_SUM=$(echo "$SHOW_SEASON_COUNT" | wc -l)
 
 
-## Brag About What We Found!
-centerCOLOR_ONE "$SHOW_SEASON_COUNT Seasons Found!" && sleep 1 && echo ""
+## BRAG ABOUT WHAT WE FOUND
+centerCOLOR_ONE "$SEASONS_SUM Seasons Found!" && sleep 1 && echo ""
 centerCOLOR_TWO "$EPISODE_COUNT Episodes Found!" && sleep 3 && echo "" && echo ""
-centerCOLOR_THREE "ATTENTION: DISCOVERY PLUS EPISODES TAKE QUITE SOME TIME WHILE MERGING EPISODE FRAGMENTS" && sleep 1 && echo "" && echo ""
-centerCOLOR_THREE "ATTENTION: DISCOVERY PLUS EPISODES TAKE QUITE SOME TIME WHILE MERGING EPISODE FRAGMENTS" && sleep 1 && echo "" && echo ""
-centerCOLOR_THREE "ATTENTION: DISCOVERY PLUS EPISODES TAKE QUITE SOME TIME WHILE MERGING EPISODE FRAGMENTS" && sleep 1 && echo "" && echo ""
-centerCOLOR_THREE "ATTENTION: DISCOVERY PLUS EPISODES TAKE QUITE SOME TIME WHILE MERGING EPISODE FRAGMENTS" && sleep 1 && echo "" && echo ""
-centerCOLOR_THREE "ATTENTION: DISCOVERY PLUS EPISODES TAKE QUITE SOME TIME WHILE MERGING EPISODE FRAGMENTS" && echo "" && echo ""
 read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Begin Downloading The Episodes-_'`"
 clear
 
 
-## Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
+### Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
 ## Create a function so we can multi-thread
-MULTI_THREAD(){
-## This is a method using aria2c as the downloader,but is super slow for Discovery Plus
-#yt-dlp --restrict-filenames --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --downloader aria2c --downloader-args "aria2c:-x 16 -j 40 --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
+  MULTI_THREAD(){
+    ## This Method is WAY FASTER than using w/ aria2c.
+    ## "I've Included some extra metadata/thumbnail flags as well"
+    ## If your connection/cpu can or cannot handle the current parallel downloading setting,modify "-N10" to increase/decrease the number of parallel fragment downloads per episode
+    yt-dlp  --embed-thumbnail \
+      --embed-metadata \
+      --write-all-thumbnails \
+      -N50 \
+      --ignore-config \
+      --cookies "$COOKIE_FILE" \
+      --quiet \
+      --no-warnings \
+      --extractor-retries 10 \
+      --hls-prefer-ffmpeg \
+      -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' \
+      "$EP_URL"
 
-## This Method is WAY FASTER than using the above command w/ aria2c.  Feel free to modify to your liking
-## "I've Included some extra metadata/thumbnail flags as well"
-## If your connection/cpu can handle it,modify "-N10" to increase the number of parallel fragment downloads per episode
-yt-dlp  --embed-thumbnail --embed-metadata --write-all-thumbnails -N10 --ignore-config --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --hls-prefer-ffmpeg -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
-
-}
+  }
 
 
 ## READ LINES FROM EPISODE_URL_LIST AND PASS IT TO MULTI_THREAD FUNCTION
 while read -r EP_URL; do
-centerBOLD "Downloading:"
-centerBOLD_TWO "$EP_URL"
-MULTI_THREAD &
-## THE NUMBER DIRRCTLY FOLLOWING "-ge" IS HOW MANY THREADS,MODIFY AS NEEDED
-## CURRENTLY THIS SCRIPT WILL CREATE 5 THREADS AT A TIME
-[ "$( jobs | wc -l )" -ge 5 ] && wait
+  centerBOLD "Downloading:"
+  centerBOLD_TWO "$EP_URL"
+  MULTI_THREAD &
+  ## THE NUMBER DIRRCTLY FOLLOWING "-ge" IS HOW MANY THREADS,MODIFY AS NEEDED
+  ## CURRENTLY THIS SCRIPT WILL CREATE 5 THREADS AT A TIME
+  [ "$( jobs | wc -l )" -ge 5 ] && wait
 done < "$EPISODE_URL_LIST"
 wait
 clear
