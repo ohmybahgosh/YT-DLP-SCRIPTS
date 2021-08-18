@@ -180,7 +180,7 @@ curl -s "https://us1-prod-direct.discoveryplus.com/cms/collections/8943830035665
   -H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
   -H 'referer: https://www.discoveryplus.com/' \
   -H 'accept-language: en' \
-  --cookie "${COOKIE_FILE}" | jq -r '.included[] | .attributes | .path' | sed -e 's#null##g' -e '/^$/d' | sed -e 's#^#https://www.discoveryplus.com/video/#g' >> "$EPISODE_URL_LIST"
+  --cookie "${COOKIE_FILE}" | jq -r '.included[]? | .attributes | .path' | sed -e 's#null##g' -e '/^$/d' | sed -e 's#^#https://www.discoveryplus.com/video/#g' >> "$EPISODE_URL_LIST"
 done
 
 
@@ -203,7 +203,14 @@ clear
 ## Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
 ## Create a function so we can multi-thread
 MULTI_THREAD(){
-yt-dlp --restrict-filenames --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --downloader aria2c --downloader-args "aria2c:-x 16 -j 40 --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
+## This is a method using aria2c as the downloader,but is super slow for Discovery Plus
+#yt-dlp --restrict-filenames --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --downloader aria2c --downloader-args "aria2c:-x 16 -j 40 --summary-interval=0" -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL"
+
+## This Method is WAY FASTER than using the above command w/ aria2c.  Feel free to modify to your liking
+## "I've Included some extra metadata/thumbnail flags as well"
+## If your connection/cpu can handle it,modify "-N10" to increase the number of parallel fragment downloads per episode
+yt-dlp  --embed-thumbnail --embed-metadata --write-all-thumbnails -N10 --ignore-config --cookies "$COOKIE_FILE" --quiet --no-warnings --extractor-retries 10 --hls-prefer-ffmpeg -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' "$EP_URL" }
+
 }
 
 
