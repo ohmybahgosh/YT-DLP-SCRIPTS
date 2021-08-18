@@ -1,4 +1,4 @@
-[submodule "scripts-common"]
-	path = scripts-common
+[submodule "DISCOVERY-PLUS-YTDLP/scripts-common"]
+	path = DISCOVERY-PLUS-YTDLP/scripts-common
 	url = https://gitlab.com/bertrand-benoit/scripts-common.git
 	branch = stable
