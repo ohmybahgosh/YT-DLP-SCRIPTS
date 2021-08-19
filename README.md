@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to YT-DLP-SCRIPTS 👋</h1>
 <p align="center">
-  <a href="#"><img src="https://i.imgur.com/AH4F0yx.gif"></a>
+  <a href="https://github.com/ohmybahgosh/YT-DLP-SCRIPTS#welcome-to-yt-dlp-scripts-"><img src="https://i.imgur.com/AH4F0yx.gif"></a>
 </p>
 
 
