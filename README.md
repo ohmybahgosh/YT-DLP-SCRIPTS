@@ -11,7 +11,7 @@
 ## Downloading This Repo:
 
 ```sh
-git clone https://github.com/ohmybahgosh/YT-DLP-SCRIPTS
+git clone https://github.com/ohmybahgosh/YT-DLP-SCRIPTS.git
 ```
 </br></br>
 ## Author
