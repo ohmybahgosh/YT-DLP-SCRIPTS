@@ -5,7 +5,7 @@
 
 #### Demo:
 <p align="center">
-  <a href="#"><img src="https://gist.githubusercontent.com/ohmybahgosh/a1b48ed3710fd5b77bdb56b61c885ef5/raw/4b126db5e2fc84a550fcae80f2079a671bbfc6df/YT-DLP_SCRIPTS.svg"></a>
+  <a href="#"><img width="800" src="https://gist.githubusercontent.com/ohmybahgosh/a1b48ed3710fd5b77bdb56b61c885ef5/raw/4b126db5e2fc84a550fcae80f2079a671bbfc6df/YT-DLP_SCRIPTS.svg"></a>
 </p>
 
 
