@@ -100,6 +100,10 @@ export TERM=xterm-256color
     printf '%*.*s \e[36m\e[1m%s\e[21m\e[0m %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
   }
 
+if ! hash jq; then
+  echo Could not find jq on path, exiting.
+  exit 1
+fi
 
 ## LET'S GET THE PARTY STARTED BY GRABBING SOME USER INPUT...
 clear
