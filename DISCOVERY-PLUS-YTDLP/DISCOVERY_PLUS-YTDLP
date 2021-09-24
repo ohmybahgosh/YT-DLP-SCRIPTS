@@ -151,6 +151,20 @@ read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
 clear
 
 
+## LET'S ASK IF YOU WANT A LOG FILE
+clear
+centerCOLOR_ONE "OPTIONAL: Provide The FULL PATH For The Download Log File:"
+centerCOLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS/DISCOVERY_PLUS_LOG.txt"
+centerCOLOR_THREE "This will let you restart the script and skip already downloaded episodes"
+centerCOLOR_FOUR "Leave blank to disable."
+read -e -r -p "`printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m "`" LOG_FILE
+clear
+centerCOLOR_ONE "Download Log Path Entered:"
+centerCOLOR_TWO "$LOG_FILE" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
+clear
+
+
 ## CREATE A TMP DIRECTORY TO SAFELY WORK INSIDE OF..
 cd "$OUTPUTDIR" || exit
 TMPWORKDIR=$(echo "${URL_SLUG}_$((1 + $RANDOM % 10000))_TMPWORKDIR")
@@ -225,6 +239,7 @@ clear
       --no-warnings \
       --extractor-retries 10 \
       --hls-prefer-ffmpeg \
+      ${LOG_FILE:+--download-archive $LOG_FILE} \
       -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' \
       "$EP_URL"
 
