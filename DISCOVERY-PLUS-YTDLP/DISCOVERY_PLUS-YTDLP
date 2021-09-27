@@ -151,6 +151,20 @@ read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
 clear
 
 
+## LET'S ASK IF YOU WANT A LOG FILE
+clear
+centerCOLOR_ONE "OPTIONAL: Provide The FULL PATH For The Download Log File:"
+centerCOLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS/DISCOVERY_PLUS_LOG.txt"
+centerCOLOR_THREE "This will let you restart the script and skip already downloaded episodes"
+centerCOLOR_FOUR "Leave blank to disable."
+read -e -r -p "`printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m "`" LOG_FILE
+clear
+centerCOLOR_ONE "Download Log Path Entered:"
+centerCOLOR_TWO "$LOG_FILE" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Continue-_'`"
+clear
+
+
 ## CREATE A TMP DIRECTORY TO SAFELY WORK INSIDE OF..
 cd "$OUTPUTDIR" || exit
 TMPWORKDIR=$(echo "${URL_SLUG}_$((1 + $RANDOM % 10000))_TMPWORKDIR")
@@ -206,7 +220,6 @@ SEASONS_SUM=$(echo "$SHOW_SEASON_COUNT" | wc -l)
 centerCOLOR_ONE "$SEASONS_SUM Seasons Found!" && sleep 1 && echo ""
 centerCOLOR_TWO "$EPISODE_COUNT Episodes Found!" && sleep 3 && echo "" && echo ""
 read -n 1 -s -r -p "`centerBLINK '_-Press Any Key to Begin Downloading The Episodes-_'`"
-clear
 
 
 ### Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
@@ -225,21 +238,33 @@ clear
       --no-warnings \
       --extractor-retries 10 \
       --hls-prefer-ffmpeg \
+      ${LOG_FILE:+--download-archive $LOG_FILE} \
       -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' \
-      "$EP_URL"
+      "$1"
 
   }
 
+## THE NUMBER OF DOWNLOADS TO RUN AT ONCE, MODIFY AS NEEDED
+## CURRENTLY THIS SCRIPT WILL CREATE 5 THREADS AT A TIME
+THREADS=5
 
-## READ LINES FROM EPISODE_URL_LIST AND PASS IT TO MULTI_THREAD FUNCTION
-while read -r EP_URL; do
-  centerBOLD "Downloading:"
-  centerBOLD_TWO "$EP_URL"
-  MULTI_THREAD &
-  ## THE NUMBER DIRRCTLY FOLLOWING "-ge" IS HOW MANY THREADS,MODIFY AS NEEDED
-  ## CURRENTLY THIS SCRIPT WILL CREATE 5 THREADS AT A TIME
-  [ "$( jobs | wc -l )" -ge 5 ] && wait
-done < "$EPISODE_URL_LIST"
+if ! hash parallel; then {
+  centerCOLOR_FOUR "GNU Parallel not available, falling back to shell jobs"
+  ## READ LINES FROM EPISODE_URL_LIST AND PASS IT TO MULTI_THREAD FUNCTION
+  while read -r EP_URL; do
+    centerBOLD "Downloading:"
+    centerBOLD_TWO "$EP_URL"
+    MULTI_THREAD $EP_URL &
+    [ "$( jobs | wc -l )" -ge $THREADS ] && wait
+  done < "$EPISODE_URL_LIST"
+}
+else {
+    export -f MULTI_THREAD
+    export COOKIE_FILE
+    export LOG_FILE
+    parallel --bar -P$THREADS MULTI_THREAD < "$EPISODE_URL_LIST"
+}
+fi
 wait
 clear
 
