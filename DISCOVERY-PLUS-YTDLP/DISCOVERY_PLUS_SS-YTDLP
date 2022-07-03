@@ -1,0 +1,268 @@
+#!/bin/bash
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+########################                                                                      #########################
+########################         _____ _   _____     _____     _   _____         _            #########################
+########################        |     | |_|     |_ _| __  |___| |_|   __|___ ___| |_          #########################
+########################        |  |  |   | | | | | | __ -| .'|   |  |  | . |_ -|   |         #########################
+########################        |_____|_|_|_|_|_|_  |_____|__,|_|_|_____|___|___|_|_|         #########################
+########################                        |___|                                         #########################
+########################                                                                      #########################
+########################                                                                      #########################
+########################              https://github.com/ohmybahgosh/YT-DLP-SCRIPTS           #########################
+########################                                                                      #########################
+########################                        DISCOVERY_PLUS_SS-YTDLP                       #########################
+########################         Download All Episodes From A SINGLE Season of Series         #########################
+########################                                                                      #########################
+#######################################################################################################################
+########################          To Run This Script, Just Type: DISCOVERY_PLUS-YTDLP         #########################
+#######################################################################################################################
+########################                            REQUIRED TOOLS:                           #########################
+########################        SED: https://www.gnu.org/software/sed/manual/sed.html         #########################
+########################               YT-DLP: https://github.com/yt-dlp/yt-dlp               #########################
+########################                   JQ: https://stedolan.github.io/jq                  #########################
+########################                    ARIA2C: https://aria2.github.io                   #########################
+#######################################################################################################################
+#######################################################################################################################
+########################                    WARNING: Use wisely and what not..                #########################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+###              /$$$$$$$  /$$$$$$$$  /$$$$$$  /$$$$$$$        /$$$$$$$$ /$$   /$$ /$$$$$$  /$$$$$$                 ###
+###  ;;;;;      | $$__  $$| $$_____/ /$$__  $$| $$__  $$      |__  $$__/| $$  | $$|_  $$_/ /$$__  $$         ;;;;;  ###
+###  ;;;;;      | $$  \ $$| $$      | $$  \ $$| $$  \ $$         | $$   | $$  | $$  | $$  | $$  \__/         ;;;;;  ###
+###  ;;;;;      | $$$$$$$/| $$$$$   | $$$$$$$$| $$  | $$         | $$   | $$$$$$$$  | $$  |  $$$$$$          ;;;;;  ###
+###  ;;;;;      | $$$$$$$/| $$$$$   | $$$$$$$$| $$  | $$         | $$   | $$$$$$$$  | $$  |  $$$$$$          ;;;;;  ###
+###  ;;;;;      | $$__  $$| $$__/   | $$__  $$| $$  | $$         | $$   | $$__  $$  | $$   \____  $$         ;;;;;  ###
+###..;;;;;..    | $$  \ $$| $$      | $$  | $$| $$  | $$         | $$   | $$  | $$  | $$   /$$  \ $$       ..;;;;;..###
+### ':::::'     | $$  | $$| $$$$$$$$| $$  | $$| $$$$$$$/         | $$   | $$  | $$ /$$$$$$|  $$$$$$/        ':::::' ###
+###   ':`       |__/  |__/|________/|__/  |__/|_______/          |__/   |__/  |__/|______/ \______/           ':`   ###
+#######################################################################################################################
+#######################################################################################################################
+##                                ---> IF THIS SCRIPT ISN'T WORKING FOR YOU... <---                                  ##
+##                     THERE'S A HIGH LIKELYHOOD THAT YOUR COOKIE ISN'T FORMATTED CORRECTLY                          ##
+#######################################################################################################################
+#######################################################################################################################
+##                   ---> I HIGHLY RECOMMEND USING CHROME WITH THE EditThisCookie EXTENSION: <---                    ##
+##           https://chrome.google.com/webstore/detail/edit-this-cookie/fngmhnnpilhplaeedifhccceomclgfbg             ##
+#######################################################################################################################
+#######################################################################################################################
+##                               YOUR COOKIE FILE NEEDS TO BE IN NETSCAPE FORMAT ONLY                                ##
+##                            YOU MUST INCLUDE ALL Discovery+ SUB-DOMAINS IN YOUR COOKIE                             ##
+#######################################################################################################################
+#######################################################################################################################
+
+## SETUP TERM TO OUTPUT IN COLOR
+export TERM=xterm-256color
+
+## BOILERPLATE ASCII FORMATTING FUNCTIONS:
+COLOR_ONE() {
+  printf '\e[34m%s\e[21m\e[0m\n' "$1"
+}
+
+COLOR_TWO() {
+  printf '\n\e[36m%s\e[21m\e[0m\n' "$1"
+}
+
+COLOR_THREE() {
+  printf '\e[34m%s\e[21m\e[0m\n' "$1"
+}
+
+COLOR_FOUR() {
+  printf '\e[31m%s\e[21m\e[0m\n' "$1"
+}
+
+BLINK() {
+  printf '\e[36m\e[5m%s\e[0m\e[25m \n' "$1"
+}
+
+BOLD() {
+  printf '\e[35m\e[1m%s\e[21m\e[0m\n' "$1"
+}
+
+BOLD_TWO() {
+  printf '\e[36m\e[1m%s\e[21m\e[0m\n' "$1"
+}
+
+ensurecmd() {
+  if ! hash $1; then
+    echo Could not find $1 on path, exiting.
+    exit 1
+  fi
+}
+
+ensurecmd jq
+ensurecmd curl
+ensurecmd sed
+ensurecmd yt-dlp
+
+## LET'S GET THE PARTY STARTED BY GRABBING SOME USER INPUT...
+clear
+COLOR_ONE "First We Have To Determine How Many Seasons There Are..."
+COLOR_TWO "Then, We'll Determine & Extract The Episode URLs From Each Season"
+COLOR_THREE "Once We Extract The Episode URLs, We'll Begin Downloading Them.." && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to BEGIN-_')"
+
+## LET'S GRAB THE SERIES URL..
+read -e -r -p "$(clear) $(echo -e "\n" && COLOR_ONE "Provide The URL For The Series:") $(COLOR_TWO "Ex: https://www.discoveryplus.com/show/deadliest-catch") $(printf "\e[35m\e[1m\nENTER THE URL:\n\e[36m\e[1m>\e[21m\e[0m ")" RAW_SERIES_URL
+clear
+COLOR_ONE "Series URL Entered:"
+COLOR_TWO "$RAW_SERIES_URL" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Continue-_')"
+clear
+
+## LET'S PROVIDE THE FULL PATH TO OUR COOOOOKIE
+read -e -r -p "$(clear) $(echo -e "\n" && COLOR_ONE "Provide The FULL PATH For The Cookie File:") $(COLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS/DISCOVERY_PLUS_COOKIE.txt") $(printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m ")" COOKIE_FILE
+clear
+COLOR_ONE "Cookie Path Entered:"
+COLOR_TWO "$COOKIE_FILE" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Continue-_')"
+clear
+
+## TRIM INPUT URL TO JUST THE SERIES TITLE SLUG
+URL_SLUG=$(echo "$RAW_SERIES_URL" | sed -E 's#^.*show/(.*).*$#\1#' | sed -e 's#/$##')
+
+## LET'S SET THE OUTPUT DIRECTORY THAT WE'LL WORK INSIDE OF
+read -r -e -p "$(clear) $(echo -e "\n" && COLOR_ONE "Enter The Path To a Directory Where You Want To Download To") $(COLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS") $(printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m ")" OUTPUTDIR
+clear
+COLOR_ONE "You Entered:"
+COLOR_TWO "$OUTPUTDIR" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Continue-_')"
+clear
+
+## LET'S ASK IF YOU WANT A LOG FILE
+clear
+COLOR_ONE "OPTIONAL: Provide The FULL PATH For The Download Log File:"
+COLOR_TWO "Ex: /STORAGE/DISCOVERY_PLUS/DISCOVERY_PLUS_LOG.txt"
+COLOR_THREE "This will let you restart the script and skip already downloaded episodes"
+COLOR_FOUR "Leave blank to disable."
+read -e -r -p "$(printf "\e[35m\e[1m\nENTER PATH:\n\e[36m\e[1m>\e[21m\e[0m ")" LOG_FILE
+clear
+COLOR_ONE "Download Log Path Entered:"
+COLOR_TWO "$LOG_FILE" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Continue-_')"
+clear
+
+## CREATE A TMP DIRECTORY TO SAFELY WORK INSIDE OF..
+cd "$OUTPUTDIR" || exit
+TMPWORKDIR=$(echo "${URL_SLUG}_$((1 + $RANDOM % 10000))_TMPWORKDIR")
+mkdir "$TMPWORKDIR" && cd "$TMPWORKDIR" || exit
+
+## LET'S GET A LOOP TOGETHER HERE, SO THAT WE CAN EXTRACT EVERY EPISODE URL FRO EVERY SEASON
+COLOR_ONE "Now Let's Determine How Many Seasons There Are For This Series"
+COLOR_TWO "Then We'll Pick Which Season We Want to Download" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Continue-_')"
+clear
+
+## CREATE FILENAME VARIABLE FOR OUR URL LIST
+EPISODE_URL_LIST=${URL_SLUG}_INPUT_URLS.txt
+
+## GRAB FIRST DUMP OF JSON SO WE CAN SET THE SHOW_ID VARIABLE
+SHOW_JSON_FIRST=$(
+  curl -s "https://us1-prod-direct.discoveryplus.com/cms/routes/show/${URL_SLUG}?include=default&decorators=viewingHistory,isFavorite,playbackAllowed" \
+    -H 'authority: us1-prod-direct.discoveryplus.com' \
+    -H 'x-disco-client: WEB:UNKNOWN:dplus_us:1.8.0' \
+    -H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
+    -H 'accept: */*' \
+    -H 'accept-language: en-US,en;q=0.9' \
+    --cookie "${COOKIE_FILE}"
+)
+
+## USING THE SHOW_JSON_FIRST DUMP, WE CAN EXTRACT THE SHOW_ID & SHOW_SEASON_COUNT
+SHOW_ID=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[].attributes.component.mandatoryParams' | grep -Eo '^pf.*$' | head -n1 | sed -e 's#pf\[show\.id\]\=##' | sed -e 's/&.*$//g')
+SHOW_SEASON_COUNT=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[]? | .attributes.component.filters | values' | grep -Eo 'pf\[seasonNumber\].*$' | sed -e 's#pf\[seasonNumber\]=##g' -e 's#",##g')
+
+## LET'S PICK WHICH SEASON WE WANT TO DOWNLOAD
+echo "███████╗███████╗ █████╗ ███████╗ ██████╗ ███╗   ██╗███████╗"
+echo "██╔════╝██╔════╝██╔══██╗██╔════╝██╔═══██╗████╗  ██║██╔════╝"
+echo "███████╗█████╗  ███████║███████╗██║   ██║██╔██╗ ██║███████╗"
+echo "╚════██║██╔══╝  ██╔══██║╚════██║██║   ██║██║╚██╗██║╚════██║"
+echo "███████║███████╗██║  ██║███████║╚██████╔╝██║ ╚████║███████║"
+echo "╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝"
+echo "          ███████╗ ██████╗ ██╗   ██╗███╗   ██╗██████╗      "
+echo "          ██╔════╝██╔═══██╗██║   ██║████╗  ██║██╔══██╗██╗  "
+echo "          █████╗  ██║   ██║██║   ██║██╔██╗ ██║██║  ██║╚═╝  "
+echo "          ██╔══╝  ██║   ██║██║   ██║██║╚██╗██║██║  ██║██╗  "
+echo "          ██║     ╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝╚═╝  "
+echo "          ╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝      "
+echo "                                                           "
+PRETTY_SEASON_LIST=$(for i in $(echo -e "${SHOW_SEASON_COUNT}"); do COLOR_FOUR "Season $i"; done)
+echo -e "${PRETTY_SEASON_LIST}\n\n"
+read -e -r -p " $(echo -e "\n" && COLOR_ONE "Provide The Season Number IN NUMERICAL FORMATTING") $(COLOR_TWO "Ex: Enter 12 for Season 12") $(printf "\e[35m\e[1m\nNumberical Season Number:\n\e[36m\e[1m>\e[21m\e[0m ")" SEASON_NUMBER
+clear
+COLOR_ONE "Numberical Season Number Entered:"
+COLOR_TWO "$SEASON_NUMBER" && sleep 1 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Continue-_')"
+clear
+
+## NOW WE'LL DUMP THE JSON FOR THE REQUESTED SEASON
+curl -s "https://us1-prod-direct.discoveryplus.com/cms/collections/89438300356657080631189351362572714453?include=default&decorators=viewingHistory,isFavorite,playbackAllowed&pf\[seasonNumber\]=${SEASON_NUMBER}&pf\[show.id\]=${SHOW_ID}" \
+  -H 'authority: us1-prod-direct.discoveryplus.com' \
+  -H 'x-disco-client: WEB:UNKNOWN:dplus_us:prod' \
+  -H 'x-disco-params: realm=go,siteLookupKey=dplus_us,features=ar' \
+  -H 'referer: https://www.discoveryplus.com/' \
+  -H 'accept-language: en' \
+  --cookie "${COOKIE_FILE}" | jq -r '.included[]? | .attributes | .path' | sed -e 's#null##g' -e '/^$/d' | sed -e 's#^#https://www.discoveryplus.com/video/#g' >>"$EPISODE_URL_LIST"
+
+## LET'S GET THE TOTAL EPISODE COUNT & SET IT TO A VARIABLE
+EPISODE_COUNT=$(cat "$EPISODE_URL_LIST" | wc -l) && clear
+SEASONS_SUM=$(echo "$SHOW_SEASON_COUNT" | wc -l)
+
+## BRAG ABOUT WHAT WE FOUND
+COLOR_ONE "Extracted The Episode URLS From Season ${SEASON_NUMBER}:" && sleep 1 && echo ""
+COLOR_TWO "$EPISODE_COUNT Episodes Found!" && sleep 3 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Begin Downloading The Episodes-_')"
+clear
+
+### Now We Sit Back and Have YT-DLP Download Every Episode We Found From Our TXT File
+## Create a function so we can multi-thread
+MULTI_THREAD() {
+  ## This Method is WAY FASTER than using w/ aria2c.
+  ## "I've Included some extra metadata/thumbnail flags as well"
+  ## If your connection/cpu can or cannot handle the current parallel downloading setting,modify "-N50" to increase/decrease the number of parallel fragment downloads per episode
+  yt-dlp --embed-thumbnail \
+    --embed-metadata \
+    --write-all-thumbnails \
+    -N50 \
+    --no-part \
+    --ignore-config \
+    --cookies "$COOKIE_FILE" \
+    --quiet \
+    --no-warnings \
+    --extractor-retries 10 \
+    --hls-prefer-native \
+    ${LOG_FILE:+--download-archive $LOG_FILE} \
+    -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' \
+    "$1"
+
+}
+
+## THE NUMBER OF DOWNLOADS TO RUN AT ONCE, MODIFY AS NEEDED
+## CURRENTLY THIS SCRIPT WILL CREATE 5 THREADS AT A TIME
+THREADS=5
+
+## READ LINES FROM EPISODE_URL_LIST AND PASS IT TO MULTI_THREAD FUNCTION
+while read -r EP_URL; do
+  BOLD "Downloading:"
+  BOLD_TWO "$EP_URL"
+  MULTI_THREAD $EP_URL &
+  [ "$(jobs | wc -l)" -ge $THREADS ] && wait
+done <"$EPISODE_URL_LIST"
+
+wait
+clear
+
+## Remove The TXT File of URLS, Feel Free To Comment This Out
+COLOR_ONE "To KEEP $EPISODE_URL_LIST Type: N ..and Hit Enter" && echo ""
+COLOR_TWO "To DELETE $EPISODE_URL_LIST Type: Y ..and Hit Enter" && echo "" && echo ""
+rm -i "$EPISODE_URL_LIST"
+clear
+
+## ALL DONE
+COLOR_ONE "WE'RE ALL DONE HERE.." && sleep 1 && echo "" && echo ""
+COLOR_TWO "...For More Scripts, Be Sure To Checkout My Repo:" && sleep 1 && echo ""
+COLOR_THREE "https://github.com/ohmybahgosh/YT-DLP-SCRIPTS" && sleep 3 && echo "" && echo ""
+read -n 1 -s -r -p "$(BLINK '_-Press Any Key to Exit-_')"
+clear
+exit 0
