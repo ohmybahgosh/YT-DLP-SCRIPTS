@@ -171,7 +171,7 @@ SHOW_JSON_FIRST=$(
 )
 
 ## USING THE SHOW_JSON_FIRST DUMP, WE CAN EXTRACT THE SHOW_ID & SHOW_SEASON_COUNT
-SHOW_ID=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[].attributes.component.mandatoryParams' | grep -Eo '^pf.*$' | head -n1 | sed -e 's#pf\[show\.id\]\=##' | sed -e 's/&.*$//g')
+SHOW_ID=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[].attributes.component.mandatoryParams' | grep -Eo '^pf.*$' | head -n1 | sed -e 's#pf\[show\.id\]\=##' | sed -e 's/&.*$//g' | sed -e 's#pf.*=##g')
 SHOW_SEASON_COUNT=$(echo "$SHOW_JSON_FIRST" | jq -r '.included[]? | .attributes.component.filters | values' | grep -Eo 'pf\[seasonNumber\].*$' | sed -e 's#pf\[seasonNumber\]=##g' -e 's#",##g')
 
 ## LET'S PICK WHICH SEASON WE WANT TO DOWNLOAD
@@ -232,7 +232,7 @@ MULTI_THREAD() {
     --quiet \
     --no-warnings \
     --extractor-retries 10 \
-    --hls-prefer-native \
+    --hls-prefer-ffmpeg \
     ${LOG_FILE:+--download-archive $LOG_FILE} \
     -o '%(series)s/Season %(season_number)s/%(series)s - S%(season_number)02dE%(episode_number)02d: %(title)s.%(ext)s' \
     "$1"
